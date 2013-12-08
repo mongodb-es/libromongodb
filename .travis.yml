@@ -1,0 +1,4 @@
+install:
+    - sudo apt-get install texlive-full texlive-lang-spanish
+script:
+      - make master.pdf
