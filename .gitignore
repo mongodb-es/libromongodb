@@ -33,3 +33,4 @@
 
 build
 *.pdf
+*.synctex.gz
