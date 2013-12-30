@@ -30,6 +30,6 @@
 *.vrb
 *.xdy
 *.tdo
-
+*.pdf
 build
 *.gz
