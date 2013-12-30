@@ -2,10 +2,107 @@
 
 \section{?`Qu\'e es CRUD?}
 
+El prop\'osito de las bases de datos no es solo almacenar informaci\'on, sino manipular esa informaci\'on de distintas maneras con el objetivo de alimentar un conjunto de procesos previamente establecidos en los sistemas computacionales. En los sistemas de base de datos existen 4 funciones b\'asicas las cuales son: Crear, Leer, Modificar y Eliminar (Create, Read, Update and Delete - CRUD), de estas 4 funciones b\'asicas derivan todo un sin fin de funciones para el tratamiento de la informaci\'on.
+
+MongoDB provee un grupo de m\'etodos en JavaScript para realizar CRUD en nuestras bases de datos. 
+
 \section{Create}
+
+Crear es la primera de las 4 funciones elementales a la hora de utilizar bases de datos, nos permite insertar unidades de informaci\'on el caso de MongoDB a trav\'es de documentos en colecciones de datos. Para poder crear un documento MongoDB posee el m\'etodo \textit{.insert()}, \textit{.save()} y en de una manera especial \textit{.update()}.
+
+\subsection{.insert()}
+
+Este m\'etodo agrega un documento o un arreglo de documentos en una colecci\'on. Su uso es muy sencillo y da la posibilidad de agregar un documento con o sin campo \_id.
+
+\begin{lstlisting}
+    > documento = {"titulo": "MongoDB",
+    ...    "autores": ["Yohan Graterol", "Flavio Percoco"]};
+    > db.libro.insert(documento);
+    > arreglo = [
+    ...          {"name": "Documento1"},
+    ...          {"name": "Documento2"}
+    ...         ]
+    > db.varios.insert(arreglo);
+\end{lstlisting}
+
+\subsection{.save()}
+
+Tiene todas las funciones de .insert(), pero ademas permite actualizar un documento si ya existe el \_id de dicho documento, en ese caso .insert() mostrar\'ia una excepci\'on.
 
 \section{Read}
 
+Leer es nuestra segunda funci\'on elemental en los sistemas de base de datos, y MongoDB utiliza dos m\'etodos para la lectura de los documentos, el primer m\'etodo es \textit{.find()} que nos permite leer todos los documentos de una colecci\'on y \textit{.findOne()} que nos permite leer solo uno.
+
+\subsection{.find()}
+
+Selecciona documentos en una colecci\'on y devuelve un \textit{cursor}\footnote{Cursor: Un puntero con un conjunto de resultados de una consulta. MongoDB elimina este puntero pasado 10 minutos de inactividad.} con documentos. El siguiente ejemplo muestra los documentos de nuestra colecci\'on \textit{varios}.
+
+\begin{lstlisting}
+    > db.varios.find()
+    { "_id" : ObjectId("52c0d6ed90dc8fd5796b3eec"),
+    "name" : "Documento1" }
+    { "_id" : ObjectId("52c0d6ed90dc8fd5796b3eed"),
+    "name" : "Documento2" }
+    { "_id" : ObjectId("52c0d7bd90dc8fd5796b3eef"),
+    "name" : "Documento1" }
+    { "_id" : ObjectId("52c0d7bd90dc8fd5796b3ef0"),
+    "name" : "Documento3" }
+\end{lstlisting}
+
+.find() permite realizar lecturas o b\'usquedas parametrizadas, en el siguiente cap\'itulo se tratar\'a este tema m\'as a profundidad.
+
+\subsection{.findOne()}
+
+Al igual que .find(), permite realizar b\'usquedas en una colecci\'on con la diferencia que solo devuelve un solo documento. Si no se utilizan par\'ametros en la b\'usqueda con .findOne(), devuelve solo el primer documento agregado a la colecci\'on o el primer documento en orden natural en el disco\footnote{Es el orden que utiliza la base de datos para almacenar en disco, y solo se modifica dicho orden si se realiza una actualizaci\'on generando un incremento del tama\~no de los documentos}.
+
+\begin{lstlisting}
+    > db.varios.findOne()
+    { "_id" : ObjectId("52c0d6ed90dc8fd5796b3eec"),
+    "name" : "Documento1" }
+\end{lstlisting}
+
 \section{Update}
 
+Actualizar es otra de nuestras funciones elementales, con ella podremos modificar informaci\'on y en el caso de MongoDB se puede realizar hasta inserci\'on de documentos con el m\'etodo \textit{.update()}, y ademas se puede utilizar la funci\'on \textit{.save()} antes vista, en actualizaciones simples.
+
+\subsection{.update}
+
+Modifica un documento o un conjunto de documentos. Por defecto solo modifica un documento, pero si la opci\'on multi est\'a activada realiza la modificaci\'on sobre todos los documentos que cumplan con un criterio dado. Al igual que con .find(), .update() se puede utilizar con par\'ametros o criterios de b\'usquedas.
+
+.update() se utiliza con la siguiente estructura:
+
+\begin{lstlisting}
+    db.collection.update(
+        <consulta-criterios>,
+        <documento_modificado>,
+        { upsert: true|false, multi: true|false }
+    )
+\end{lstlisting}
+
+La opci\'on \textit{upsert}, permite agregar un documento si no existe, siempre y cuando esta opci\'on est\'e activada.
+
 \section{Delete}
+
+Eliminar es nuestra \'ultima funci\'on, y MongoDB utiliza la funci\'on \textit{.remove()} para eliminar documentos y colecciones, en el caso de las colecciones por el tema de rendimiento es mejor utilizar \textit{.drop()}.
+
+\subsection{.remove()}
+
+Elimina uno o m\'as documentos de una colecci\'on. Recibe par\'ametros para realizar una eliminaci\'on selectiva; si no se le pasa ning\'un par\'ametro elimina todos los documentos de la colecci\'on. 
+
+\begin{lstlisting}
+    > db.varios.remove({ "name" : "Documento1" });
+    > db.varios.find()
+    { "_id" : ObjectId("52c0d6ed90dc8fd5796b3eed"),
+    "name" : "Documento2" }
+    { "_id" : ObjectId("52c0d7bd90dc8fd5796b3ef0"),
+    "name" : "Documento3" }
+\end{lstlisting}
+
+\subsection{.drop()}
+
+Elimina toda una colecci\'on, es la m\'as recomendable a la hora de realizar esta tarea, ya que utiliza menos recursos que .remove().
+
+\begin{lstlisting}
+    > db.varios.drop();
+    true
+\end{lstlisting}
