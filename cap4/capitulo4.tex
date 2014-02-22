@@ -1,0 +1,102 @@
+\chapter{Operaciones avanzadas en MongoDB}
+
+\section{Operadores relacionales o de comparación}
+
+Los operadores relacionales son símbolos que se usan para comparar dos valores. Si el resultado de la comparación es correcto la expresión considerada es verdadera, en caso contrario es falsa.
+
+\begin{table}[ht] 
+\caption{Operadores relacionales}
+\centering
+\begin{tabular}{c c c c}
+\hline\hline
+Símbolo & Nombre & Ejemplo & Significado \\ [0.5ex] 
+\hline
+> & mayor que & A > B & A es mayor que B \\ 
+< & menor que & A < B & A es menor que B \\
+>= & mayor o igual que & A >= B & A es mayor o igual que B \\
+<= & menor o igual que & A <= B & A es menor o igual que B \\ 
+== & igual a & A == B & A es igual a B \\ 
+!= & distinto a & A != B & A es distinto a B \\ [1ex]
+\hline
+\end{tabular} 
+\label{table:nonlin} 
+\end{table}
+
+\subsection{Equivalencia de operadores relaciones en MongoDB}
+
+El motor de base de datos MongoDB permite hacer operaciones sobre colecciones de datos aplicando todos los operadores relaciones de la tabla 4.1, pero con ciertas variaciones.
+
+\begin{table}[ht] 
+\caption{Tabla de equivalencias de operadores relacionales}
+\centering
+\begin{tabular}{c c c c}
+\hline\hline
+Símbolo & Nombre & Equivalencia \\ [0.5ex] 
+\hline
+> & mayor que & \bf{\$gt} \\ 
+< & menor que & \bf{\$lt} \\
+>= & mayor o igual que & \bf{\$gte} \\
+<= & menor o igual que & \bf{\$lte} \\
+== & igual a & \bf{:} \\ 
+!= & distinto a & \bf{\$ne} \\ [1ex]
+\hline
+\end{tabular} 
+\label{table:nonlin} 
+\end{table}
+
+La tabla 4.2 muestra claramente las equivalencias de los operadores relacionales \footnote{La equivalencia para "igual a" no existe como tal, cualquier operación donde se especifique el valor exacto luego de dos puntos se considera "igual a"}, pero existen 2 operadores más considerados relacionales en MongoDB los cuales son \textbf{\$in} y \textbf{\$nin}.
+
+\subsection{\$gt (mayor que) | \$gte (mayor o igual que)}
+
+Los operadores \textbf{\$gt (greater)} y \textbf{\$gte (greater or equal)} son operadores que se pueden utilizar para hacer cualquier tipo de operaciones a una coleccion de documentos, el uso es similar tanto si se utiliza en consulta, escritura o borrado de documentos. 
+
+Un ejemplo de busqueda.
+
+\begin{lstlisting}
+    > db.personas.find({edad: {$gt: 10}})
+    > db.personas.find({edad: {$gte: 10}})
+\end{lstlisting}
+
+\subsection{\$lt (menor que) | \$lte (menor o igual que)}
+
+Los operadores \textbf{\$lt (less)} y \textbf{\$lte (less or equal)} son operadores con un uso similar a \$gt y \$gte. 
+
+Un ejemplo de busqueda.
+
+\begin{lstlisting}
+    > db.personas.find({edad: {$lt: 10}})
+    > db.personas.find({edad: {$lte: 10}})
+\end{lstlisting}
+
+\subsection{Operador de igualdad y desigualdad}
+
+El operador de igualdad en MongoDB no se ve reflejado en simbolos como los operadores de desigualdad, sencillamente son los dos puntos seguidos al valor de la igualdad.
+
+\begin{lstlisting}
+    > db.personas.find({edad: 10})
+\end{lstlisting}
+
+Este ejemplo consulta todos los documentos que tengan un campo edad igual a 10.
+
+En caso contrario, la desigualdad si tiene una equivalencia \$ne, que significa \textbf{not equal}, y su uso es similar a los otros operadores de mayor que, menor que, mayor igual que y menor o igual que.
+
+\subsection{\$in (Existe en) | \$nin (No existe en)}
+
+Existen dos operadores relacionales adicionales \textbf{\$in (exist in)} y \textbf{\$nin (do not exist in)}, que serían similar al cuantificador existencial en Matemáticas que se denota con $\exists$. \$in busca todos los documentos que coicidan con al menos uno de los valores contenido en el array de valores para la busqueda, y \$nin busca todos los documentos que no tengan campos que coincidan con los valores del array.
+
+Ejemplo:
+
+\begin{lstlisting}
+    > db.personas.find({edad: {$in: [9, 10]}})
+\end{lstlisting}
+
+En este ejemplo MongoDB busca todos los documentos que tengan un campo edad con valor 9, 10 o ambos.
+
+\begin{lstlisting}
+    > db.personas.find({edad: {$nin: [9, 10]}})
+\end{lstlisting}
+
+En este otro ejemplo MongoDB busca todos los documentos en el cual el campo edad no coincidan con los valores 9, 10 o ambos.
+
+\section{Operadores logicos}
+
